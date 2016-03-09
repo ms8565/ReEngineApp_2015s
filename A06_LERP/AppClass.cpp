@@ -14,6 +14,7 @@ void AppClass::InitVariables(void)
 	m_pMeshMngr->LoadModel("Sorted\\WallEye.bto", "WallEye");
 
 	fDuration = 1.0f;
+
 }
 
 void AppClass::Update(void)
@@ -36,18 +37,64 @@ void AppClass::Update(void)
 #pragma endregion
 
 #pragma region Your Code goes here
-	m_pMeshMngr->SetModelMatrix(IDENTITY_M4, "WallEye");
+
+	for (uint i = 0; i < numPoints; i++) {
+		//Render spheres on the screen to represent points
+		m_pMeshMngr->AddSphereToQueue(glm::scale(glm::translate(points[i]), vector3(.1f)), RERED, 1);
+	}
+
+	//Map proportion of runTime to total Duration into a percentage
+	float fPercent = MapValue(static_cast<float>(fRunTime), 0.0f, static_cast<float>(fDuration), 0.0f, 1.0f);
+
+	//If it's not the last point, lerp between the current point and the next point
+	//Otherwise, lerp between the current point and the first point
+	vector3 newPosition;
+	if(currentPoint+1 < numPoints) newPosition = glm::lerp(points[currentPoint], points[currentPoint+1], fPercent);
+	else newPosition = glm::lerp(points[currentPoint], points[0], fPercent);
+
+	//update model matrix
+	m_pMeshMngr->SetModelMatrix(glm::translate(newPosition), "WallEye");
+
+	//If the model has moved past the current point, start over
+	if (fRunTime > fDuration) {
+		currentPoint++;
+		fRunTime = 0;
+	}
+	
+	//If done with the loop, restart
+	if (currentPoint >= numPoints) currentPoint = 0;
+
+
+
 #pragma endregion
 
 #pragma region Does not need changes but feel free to change anything here
 	//Adds all loaded instance to the render list
 	m_pMeshMngr->AddInstanceToRenderList("ALL");
 
+	//Print info on the screen
+	m_pMeshMngr->PrintLine(m_pSystem->GetAppName(), REYELLOW);
+
+	//Print Current Point
+	m_pMeshMngr->Print("Current Point:");
+	m_pMeshMngr->PrintLine(std::to_string(currentPoint), REWHITE);
+
+	//Print fTimeSpan
+	m_pMeshMngr->Print("fTimeSpan:");
+	m_pMeshMngr->PrintLine(std::to_string(fTimeSpan), REWHITE);
+
+	//Print fRunSpan
+	m_pMeshMngr->Print("fRunTime:");
+	m_pMeshMngr->PrintLine(std::to_string(fRunTime), REWHITE);
+
+	//Print fDuration
+	m_pMeshMngr->Print("fDuration:");
+	m_pMeshMngr->PrintLine(std::to_string(fDuration), REWHITE);
+
 	//Indicate the FPS
 	int nFPS = m_pSystem->GetFPS();
 
-	//Print info on the screen
-	m_pMeshMngr->PrintLine(m_pSystem->GetAppName(), REYELLOW);
+	//Print FPS
 	m_pMeshMngr->Print("FPS:");
 	m_pMeshMngr->Print(std::to_string(nFPS), RERED);
 #pragma endregion
