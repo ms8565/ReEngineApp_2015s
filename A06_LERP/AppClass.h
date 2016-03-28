@@ -13,6 +13,26 @@ using namespace ReEng; //Using ReEng namespace to use all the classes in the dll
 class AppClass : public ReEngAppClass
 {
 	float fDuration = 1.0f; //Time Duration of the stops
+
+	//Array of set points that the model will be moving between
+	vector3 points[11] = {
+		vector3(-4.0f, -2.0f, 5.0f),
+		vector3(1.0f, -2.0f, 5.0f),
+		vector3(-3.0f, -1.0f, 3.0f),
+		vector3(2.0f, -1.0f, 3.0f),
+		vector3(-2.0f, 0.0f, 0.0f),
+		vector3(3.0f, 0.0f, 0.0f),
+		vector3(-1.0f, 1.0f, -3.0f),
+		vector3(4.0f, 1.0f, -3.0f),
+		vector3(0.0f, 2.0f, -5.0f),
+		vector3(5.0f, 2.0f, -5.0f),
+		vector3(1.0f, 3.0f, -5.0f)
+	};
+	//Number of points
+	int numPoints = 11;
+
+	int currentPoint = 0;
+
 public:
 	typedef ReEngAppClass super;
 	/*
