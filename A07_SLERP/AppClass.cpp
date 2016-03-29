@@ -1,7 +1,7 @@
 #include "AppClass.h"
 void AppClass::InitWindow(String a_sWindowName)
 {
-	super::InitWindow("SLERP - YOUR USER NAME GOES HERE"); // Window Name
+	super::InitWindow("SLERP - Madison Smith"); // Window Name
 
 	//Setting the color to black
 	m_v4ClearColor = vector4(0.0f);
@@ -47,10 +47,37 @@ void AppClass::Update(void)
 	float fEarthHalfRevTime = 0.5f * m_fDay; // Move for Half a day
 	float fMoonHalfOrbTime = 14.0f * m_fDay; //Moon's orbit is 28 earth days, so half the time for half a route
 
+
+	glm::quat startQ;
+	glm::quat endQ = glm::angleAxis(90.0f, vector3(0.0f, 1.0f, 0.0f));
+
+
+	earthMatrix = IDENTITY_M4;
+	sunMatrix = IDENTITY_M4 * glm::scale(vector3(5.936f));
+
+	matrix4 translateEarth = glm::translate(11.0f, 0.0f, 0.0f);
+	matrix4 translateMoon = glm::translate(2.0f, 0.0f, 0.0f);
+
+	//Make the earth orbit around the sun
+	float earthOrbPercent = MapValue(static_cast<float>(fRunTime), 0.0f, static_cast<float>(fEarthHalfOrbTime), 0.0f, 1.0f);
+	earthMatrix *= glm::mat4_cast(glm::mix(startQ, endQ, earthOrbPercent*2)) * translateEarth * glm::scale(vector3(.524f));
+
+	//Make the moon orbit around the earth
+	float moonOrbPercent = MapValue(static_cast<float>(fRunTime), 0.0f, static_cast<float>(fMoonHalfOrbTime), 0.0f, 1.0f);
+	moonMatrix = earthMatrix;
+	moonMatrix *= glm::mat4_cast(glm::mix(startQ, endQ, moonOrbPercent * 2)) * translateMoon * glm::scale(vector3(.27f));
+
+	//Revolve the earth on its axis
+	float earthRevPercent = MapValue(static_cast<float>(fRunTime), 0.0f, static_cast<float>(fEarthHalfRevTime), 0.0f, 1.0f);
+	earthMatrix *= glm::mat4_cast(glm::mix(startQ, endQ, earthRevPercent*2));
+
+
+
+
 	//Setting the matrices
-	m_pMeshMngr->SetModelMatrix(IDENTITY_M4, "Sun");
-	m_pMeshMngr->SetModelMatrix(IDENTITY_M4, "Earth");
-	m_pMeshMngr->SetModelMatrix(IDENTITY_M4, "Moon");
+	m_pMeshMngr->SetModelMatrix(sunMatrix, "Sun");
+	m_pMeshMngr->SetModelMatrix(earthMatrix, "Earth");
+	m_pMeshMngr->SetModelMatrix(moonMatrix, "Moon");
 
 	//Adds all loaded instance to the render list
 	m_pMeshMngr->AddInstanceToRenderList("ALL");
@@ -58,6 +85,10 @@ void AppClass::Update(void)
 	static int nEarthOrbits = 0;
 	static int nEarthRevolutions = 0;
 	static int nMoonOrbits = 0;
+
+	nEarthRevolutions = (int)fRunTime;
+	nEarthOrbits = (int)fRunTime / 365;
+	nMoonOrbits = (int)nEarthRevolutions / 28;
 
 	//Indicate the FPS
 	int nFPS = m_pSystem->GetFPS();
@@ -82,6 +113,7 @@ void AppClass::Update(void)
 
 	m_pMeshMngr->Print("FPS:");
 	m_pMeshMngr->Print(std::to_string(nFPS), RERED);
+
 }
 
 void AppClass::Display(void)
