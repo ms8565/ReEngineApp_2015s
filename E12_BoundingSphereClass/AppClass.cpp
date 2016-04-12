@@ -112,14 +112,25 @@ void AppClass::Update(void)
 	//Adds all loaded instance to the render list
 	m_pMeshMngr->AddInstanceToRenderList("ALL");
 
+
 	//Indicate the FPS
 	int nFPS = m_pSystem->GetFPS();
 	bool bAreColliding = false;
 
+	vector3 v3Center1G = vector3(m_m4Steve * vector4(m_v3Center1, 1.0f));
+	vector3 v3Center2G = vector3(m_m4Creeper * vector4(m_v3Center2, 1.0f));
+
+	float fDistanceCenters = glm::distance(v3Center1G, v3Center2G);
+
+	bAreColliding = false;
+	if (fDistanceCenters < (m_fRadius1 + m_fRadius2)) {
+		bAreColliding = true;
+	}
+
 	//Collision check goes here
-	m_pMeshMngr->Print("x:" + std::to_string( m_v3Center1.x ) + " ", RERED);
-	m_pMeshMngr->Print("y:" + std::to_string(m_v3Center1.y) + " ", RERED);
-	m_pMeshMngr->Print("z:" + std::to_string(m_v3Center1.z) + " ", RERED);
+	m_pMeshMngr->Print("x:" + std::to_string(v3Center1G.x ) + " ", RERED);
+	m_pMeshMngr->Print("y:" + std::to_string(v3Center1G.y) + " ", RERED);
+	m_pMeshMngr->Print("z:" + std::to_string(v3Center1G.z) + " ", RERED);
 	m_pMeshMngr->PrintLine("");
 
 	//print info into the console
@@ -159,19 +170,33 @@ void AppClass::Display(void)
 	matrix4 m4Projection = m_pCameraMngr->GetProjectionMatrix();
 	matrix4 m4View = m_pCameraMngr->GetViewMatrix();
 
-	matrix4 m4Model =
+	/*m_m4Steve =
 		m_pMeshMngr->GetModelMatrix("Steve") *
 		glm::translate(m_v3Center1) *
 		glm::scale(vector3(m_fRadius1 * 2.0f));
 	//m_pSphere1->Render(m4Projection, m4View, m4Model);
-	m_pMeshMngr->AddSphereToQueue(m4Model, RERED, WIRE);
+	m_pMeshMngr->AddSphereToQueue(m_m4Steve, RERED, WIRE);
 
-	m4Model =
+	m_m4Creeper =
 		m_pMeshMngr->GetModelMatrix("Creeper") *
 		glm::translate(m_v3Center2) *
 		glm::scale(vector3(m_fRadius2 * 2.0f));
 	//m_pSphere2->Render(m4Projection, m4View, m4Model);
-	m_pMeshMngr->AddSphereToQueue(m4Model, RERED, WIRE);
+	m_pMeshMngr->AddSphereToQueue(m_m4Creeper, RERED, WIRE);*/
+
+	m_m4Steve =
+		m_pMeshMngr->GetModelMatrix("Steve") *
+		glm::translate(m_v3Center1);
+		
+	//m_pSphere1->Render(m4Projection, m4View, m4Model);
+	m_pMeshMngr->AddSphereToQueue(m_m4Steve * glm::scale(vector3(m_fRadius1 * 2.0f)), RERED, WIRE);
+
+	m_m4Creeper =
+		m_pMeshMngr->GetModelMatrix("Creeper") *
+		glm::translate(m_v3Center2);
+		
+	//m_pSphere2->Render(m4Projection, m4View, m4Model);
+	m_pMeshMngr->AddSphereToQueue(m_m4Creeper * glm::scale(vector3(m_fRadius2 * 2.0f)), RERED, WIRE);
 
 	m_pMeshMngr->Render(); //renders the render list
 
