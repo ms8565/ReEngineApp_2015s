@@ -15,6 +15,7 @@ class AppClass : public ReEngAppClass
 {
 	vector3 m_v3O1 = vector3(-2.5f, 0.0f, 0.0f);
 	vector3 m_v3O2 = vector3( 2.5f, 0.0f, 0.0f);
+<<<<<<< HEAD
 
 	PrimitiveClass* m_pSphere1 = nullptr;
 	vector3 m_v3Center1;
@@ -26,6 +27,8 @@ class AppClass : public ReEngAppClass
 	matrix4 m_m4Steve;
 	matrix4 m_m4Creeper;
 
+=======
+>>>>>>> 8f580f7f9fede253430f22e409d3eac4ead431c5
 public:
 	typedef ReEngAppClass super;
 	/*
