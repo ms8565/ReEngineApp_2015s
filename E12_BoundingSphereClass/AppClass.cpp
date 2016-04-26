@@ -44,7 +44,7 @@ void AppClass::Update(void)
 
 	//Indicate the FPS
 	int nFPS = m_pSystem->GetFPS();
-<<<<<<< HEAD
+
 	bool bAreColliding = false;
 
 	vector3 v3Center1G = vector3(m_m4Steve * vector4(m_v3Center1, 1.0f));
@@ -63,8 +63,6 @@ void AppClass::Update(void)
 	m_pMeshMngr->Print("z:" + std::to_string(v3Center1G.z) + " ", RERED);
 	m_pMeshMngr->PrintLine("");
 
-=======
->>>>>>> 8f580f7f9fede253430f22e409d3eac4ead431c5
 	//print info into the console
 	printf("FPS: %d            \r", nFPS);//print the Frames per Second
 	//Print info on the screen
@@ -78,7 +76,6 @@ void AppClass::Display(void)
 	//clear the screen
 	ClearScreen();
 	//Render the grid based on the camera's mode:
-<<<<<<< HEAD
 	switch (m_pCameraMngr->GetCameraMode())
 	{
 	default: //Perspective
@@ -126,9 +123,7 @@ void AppClass::Display(void)
 	//m_pSphere2->Render(m4Projection, m4View, m4Model);
 	m_pMeshMngr->AddSphereToQueue(m_m4Creeper * glm::scale(vector3(m_fRadius2 * 2.0f)), RERED, WIRE);
 
-=======
 	m_pMeshMngr->AddGridToRenderListBasedOnCamera(m_pCameraMngr->GetCameraMode());
->>>>>>> 8f580f7f9fede253430f22e409d3eac4ead431c5
 	m_pMeshMngr->Render(); //renders the render list
 	m_pMeshMngr->ResetRenderList(); //Reset the Render list after render
 	m_pGLSystem->GLSwapBuffers(); //Swaps the OpenGL buffers
